@@ -1,0 +1,12 @@
+﻿import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is not set. Check your .env file.")
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY is not set. Check your .env file.")

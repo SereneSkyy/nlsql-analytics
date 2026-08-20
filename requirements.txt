@@ -1,9 +1,9 @@
-﻿fastapi
+fastapi
 uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 sqlglot
-google-generativeai
+google-genai
 streamlit
 pandas
 plotly

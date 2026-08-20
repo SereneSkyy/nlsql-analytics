@@ -1,0 +1,59 @@
+﻿- id: q1
+  difficulty: easy
+  question: "How many films are in the database?"
+  sql: "SELECT COUNT(*) FROM film;"
+
+- id: q2
+  difficulty: easy
+  question: "What are the 5 most expensive films to rent?"
+  sql: "SELECT title, rental_rate FROM film ORDER BY rental_rate DESC LIMIT 5;"
+
+- id: q3
+  difficulty: medium
+  question: "Which film category has the most films?"
+  sql: "SELECT c.name, COUNT(*) AS film_count FROM film_category fc JOIN category c ON fc.category_id = c.category_id GROUP BY c.name ORDER BY film_count DESC LIMIT 1;"
+
+- id: q4
+  difficulty: medium
+  question: "How much revenue did each store generate in total?"
+  sql: "SELECT s.store_id, SUM(p.amount) AS total_revenue FROM payment p JOIN staff st ON p.staff_id = st.staff_id JOIN store s ON st.store_id = s.store_id GROUP BY s.store_id;"
+
+- id: q5
+  difficulty: medium
+  question: "Who are the top 5 customers by total amount spent?"
+  sql: "SELECT c.customer_id, c.first_name, c.last_name, SUM(p.amount) AS total_spent FROM customer c JOIN payment p ON c.customer_id = p.customer_id GROUP BY c.customer_id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 5;"
+
+- id: q6
+  difficulty: hard
+  question: "What is the average rental duration in days for each film category?"
+  sql: "SELECT cat.name, AVG(EXTRACT(EPOCH FROM (r.return_date - r.rental_date)) / 86400) AS avg_days FROM rental r JOIN inventory i ON r.inventory_id = i.inventory_id JOIN film_category fc ON i.film_id = fc.film_id JOIN category cat ON fc.category_id = cat.category_id WHERE r.return_date IS NOT NULL GROUP BY cat.name;"
+
+- id: q7
+  difficulty: hard
+  question: "Which actors have appeared in the most films across different categories?"
+  sql: "SELECT a.first_name, a.last_name, COUNT(DISTINCT fc.category_id) AS category_count FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id JOIN film_category fc ON fa.film_id = fc.film_id GROUP BY a.actor_id, a.first_name, a.last_name ORDER BY category_count DESC LIMIT 5;"
+
+- id: q8
+  difficulty: hard
+  question: "What percentage of rentals were never returned?"
+  sql: "SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE return_date IS NULL) / COUNT(*), 2) AS pct_never_returned FROM rental;"
+
+- id: q9
+  difficulty: medium
+  question: "Which staff member processed the most payments?"
+  sql: "SELECT st.staff_id, st.first_name, st.last_name, COUNT(*) AS payments_processed FROM payment p JOIN staff st ON p.staff_id = st.staff_id GROUP BY st.staff_id, st.first_name, st.last_name ORDER BY payments_processed DESC LIMIT 1;"
+
+- id: q10
+  difficulty: hard
+  question: "What was the month-over-month revenue trend across all stores?"
+  sql: "SELECT DATE_TRUNC('month', payment_date) AS month, SUM(amount) AS revenue FROM payment GROUP BY month ORDER BY month;"
+
+- id: q11
+  difficulty: hard
+  question: "Which customers have rented films from every category available?"
+  sql: "SELECT c.customer_id, c.first_name, c.last_name FROM customer c JOIN rental r ON c.customer_id = r.customer_id JOIN inventory i ON r.inventory_id = i.inventory_id JOIN film_category fc ON i.film_id = fc.film_id GROUP BY c.customer_id, c.first_name, c.last_name HAVING COUNT(DISTINCT fc.category_id) = (SELECT COUNT(*) FROM category);"
+
+- id: q12
+  difficulty: easy
+  question: "How many customers are active versus inactive?"
+  sql: "SELECT activebool, COUNT(*) FROM customer GROUP BY activebool;"
