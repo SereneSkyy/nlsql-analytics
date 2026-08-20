@@ -3,7 +3,7 @@ uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 sqlglot
-anthropic
+google-generativeai
 streamlit
 pandas
 plotly

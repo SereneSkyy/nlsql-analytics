@@ -1,0 +1,18 @@
+﻿services:
+  postgres:
+    image: pgvector/pgvector:pg18
+    container_name: nlsql_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pagila
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./data/pagila/pagila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./data/pagila/pagila-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+volumes:
+  pgdata:
