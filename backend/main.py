@@ -16,11 +16,23 @@ def health():
 
 @app.post("/ask")
 def ask(request: AskRequest):
-    sql = question_to_sql(request.question)
-    df = run_sql(sql)
+    result = question_to_sql(request.question)
+
+    if not result["is_valid"]:
+        return {
+            "question": request.question,
+            "sql": result["sql"],
+            "is_valid": False,
+            "errors": result.get("errors", []),
+            "attempts": result["attempts"],
+        }
+
+    df = run_sql(result["sql"])
     return {
         "question": request.question,
-        "sql": sql,
+        "sql": result["sql"],
+        "is_valid": True,
+        "attempts": result["attempts"],
         "columns": list(df.columns),
         "rows": df.to_dict(orient="records"),
     }
