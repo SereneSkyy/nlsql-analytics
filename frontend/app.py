@@ -1,6 +1,7 @@
 ﻿import streamlit as st
 import requests
 import pandas as pd
+import plotly.express as px
 
 API_URL = "http://127.0.0.1:8000"
 
@@ -31,12 +32,26 @@ if st.button("Ask", type="primary") and question:
                     st.text(f"Attempt {i}:")
                     st.code(attempt, language="sql")
     else:
+        if result.get("summary"):
+            st.subheader("Answer")
+            st.write(result["summary"])
+
+        df = pd.DataFrame(result["rows"], columns=result["columns"])
+        chart = result.get("chart", {"chart_type": "none"})
+
+        if chart["chart_type"] == "metric":
+            st.metric(label=chart.get("label_col") or "Result", value=df[chart["value_col"]].iloc[0])
+        elif chart["chart_type"] == "bar":
+            fig = px.bar(df, x=chart["x_col"], y=chart["y_col"])
+            st.plotly_chart(fig, use_container_width=True)
+        elif chart["chart_type"] == "line":
+            fig = px.line(df, x=chart["x_col"], y=chart["y_col"])
+            st.plotly_chart(fig, use_container_width=True)
+
         st.subheader("Generated SQL")
         st.code(result["sql"], language="sql")
-
         if len(result.get("attempts", [])) > 1:
             st.caption(f"(Took {len(result['attempts'])} attempts to pass validation)")
 
         st.subheader("Results")
-        df = pd.DataFrame(result["rows"], columns=result["columns"])
         st.dataframe(df, use_container_width=True)

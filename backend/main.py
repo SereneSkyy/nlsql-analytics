@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from backend.db import check_connection
 from backend.nl2sql.generate_then_validate import question_to_sql
 from backend.execution.runner import run_sql
+from backend.output.chart_picker import pick_chart
+from backend.output.summarizer import summarize_result
 
 app = FastAPI(title="NL-to-SQL Analytics Tool")
 
@@ -28,11 +30,17 @@ def ask(request: AskRequest):
         }
 
     df = run_sql(result["sql"])
+    rows = df.to_dict(orient="records")
+    chart = pick_chart(df)
+    summary = summarize_result(request.question, rows)
+
     return {
         "question": request.question,
         "sql": result["sql"],
         "is_valid": True,
         "attempts": result["attempts"],
         "columns": list(df.columns),
-        "rows": df.to_dict(orient="records"),
+        "rows": rows,
+        "chart": chart,
+        "summary": summary,
     }
