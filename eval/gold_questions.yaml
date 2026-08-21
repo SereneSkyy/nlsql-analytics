@@ -57,3 +57,28 @@
   difficulty: easy
   question: "How many customers are active versus inactive?"
   sql: "SELECT activebool, COUNT(*) FROM customer GROUP BY activebool;"
+
+- id: q13
+  difficulty: medium
+  question: "How much total revenue did we make in 2023?"
+  sql: "SELECT SUM(amount) FROM payment WHERE payment_date >= '2023-01-01' AND payment_date < '2024-01-01';"
+
+- id: q14
+  difficulty: medium
+  question: "What was our total revenue for each year?"
+  sql: "SELECT EXTRACT(YEAR FROM payment_date) AS year, SUM(amount) AS revenue FROM payment GROUP BY year ORDER BY year;"
+
+- id: q15
+  difficulty: hard
+  question: "Which year had the highest revenue, and how much was it?"
+  sql: "SELECT EXTRACT(YEAR FROM payment_date) AS year, SUM(amount) AS revenue FROM payment GROUP BY year ORDER BY revenue DESC LIMIT 1;"
+
+- id: q16
+  difficulty: hard
+  question: "How many rentals happened in the last week of December 2023?"
+  sql: "SELECT COUNT(*) FROM rental WHERE rental_date >= '2023-12-25' AND rental_date < '2024-01-01';"
+
+- id: q17
+  difficulty: medium
+  question: "Compare total revenue between 2023 and 2024."
+  sql: "SELECT EXTRACT(YEAR FROM payment_date) AS year, SUM(amount) AS revenue FROM payment WHERE payment_date >= '2023-01-01' AND payment_date < '2025-01-01' GROUP BY year ORDER BY year;"
