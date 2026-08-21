@@ -31,10 +31,21 @@ def validate_sql_against_schema(sql: str) -> ValidationResult:
     for t in known_tables:
         all_known_columns |= schema[t]
 
+    # SELECT-clause aliases (e.g. SUM(p.amount) AS total_spent) are valid to
+    # reference elsewhere in the query (ORDER BY, HAVING) per Postgres rules,
+    # but they aren't real table columns. Without this, a query that legally
+    # reuses its own alias gets misflagged as referencing an unknown column --
+    # a false positive we hit in real testing (see README known limitations).
+    select_aliases = {
+        a.alias.lower() for a in parsed.find_all(exp.Alias) if a.alias
+    }
+
     for col in parsed.find_all(exp.Column):
         col_name = col.name.lower()
         table_ref = col.table.lower() if col.table else None
         if col_name == "*":
+            continue
+        if not table_ref and col_name in select_aliases:
             continue
         if table_ref and table_ref in schema:
             if col_name not in schema[table_ref]:
@@ -42,9 +53,5 @@ def validate_sql_against_schema(sql: str) -> ValidationResult:
         elif not table_ref:
             if col_name not in all_known_columns:
                 errors.append(f"Unknown column '{col_name}' (no table specified)")
-        # Note: if table_ref is an alias (e.g. 'c' for customer) rather than a
-        # real table name, we skip strict checking for that column -- fully
-        # resolving aliases back to base tables is out of scope for this
-        # validator. Documented as a known limitation.
 
     return ValidationResult(is_valid=len(errors) == 0, errors=errors)
