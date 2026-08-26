@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 import plotly.express as px
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = st.secrets.get("API_URL", "http://127.0.0.1:8000")
 
 st.set_page_config(page_title="NL-to-SQL Analytics", layout="wide")
 st.title("NL-to-SQL Analytics Tool")
