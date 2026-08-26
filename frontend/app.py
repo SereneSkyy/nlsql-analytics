@@ -34,7 +34,7 @@ if st.button("Ask", type="primary") and question:
     else:
         if result.get("summary"):
             st.subheader("Answer")
-            st.write(result["summary"])
+            st.text(result["summary"])
 
         df = pd.DataFrame(result["rows"], columns=result["columns"])
         chart = result.get("chart", {"chart_type": "none"})
