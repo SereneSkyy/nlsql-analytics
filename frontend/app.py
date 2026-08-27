@@ -14,7 +14,7 @@ question = st.text_input("Your question", placeholder="e.g. Who are the top 5 cu
 if st.button("Ask", type="primary") and question:
     with st.spinner("Generating SQL and running query..."):
         try:
-            response = requests.post(f"{API_URL}/ask", json={"question": question}, timeout=60)
+            response = requests.post(f"{API_URL}/ask", json={"question": question}, timeout=120)
             response.raise_for_status()
             result = response.json()
         except requests.exceptions.RequestException as e:
