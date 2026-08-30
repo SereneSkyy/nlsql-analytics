@@ -5,8 +5,7 @@ Ask a business question in plain English, get back validated SQL, real results f
 **Live demo:** [your-streamlit-url].streamlit.app _(fill in after Streamlit Cloud deploy)_
 **Backend API:** https://nlsql-analytics.fastapicloud.dev
 
-Built on the [Pagila](https://github.com/devrimgunduz/pagila) dataset (a DVD rental store schema, the canonical PostgreSQL sample database) rather than a second e-commerce dataset, to keep this project's domain distinct from other portfolio work.
-
+Built on the [Pagila](https://github.com/devrimgunduz/pagila) dataset (a DVD rental store schema, the canonical PostgreSQL sample database)
 ---
 
 ## Why this project exists
